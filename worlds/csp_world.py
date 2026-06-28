@@ -232,7 +232,9 @@ class CspWorld(BasePyGameWorld):
                     
                 # In số ID của vùng vào giữa ô
                 id_surf = self.font.render(str(region_id), True, COLOR_BLACK)
-                surface.blit(id_surf, id_surf.get_rect(center=(x + cell_size//2, y + cell_size//2)))
+                id_rect = id_surf.get_rect(center=(x + cell_size//2, y + cell_size//2))
+                pygame.draw.circle(surface, COLOR_WHITE, id_rect.center, 12)
+                surface.blit(id_surf, id_rect)
                     
         # Draw Highlights for Current and Conflict
         for r in range(self.rows):
