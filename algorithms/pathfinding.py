@@ -201,6 +201,7 @@ def IDA_Star(problem):
     node = Node(state=problem.initial_state, path_cost=0)
     limit = node.path_cost + problem.heuristic(node.state)
     visited_all_rounds = set()
+    total_steps = 0
     
     while True:
         visited_this_round = set()
@@ -212,6 +213,7 @@ def IDA_Star(problem):
         
         while stack:
             current_node, path_states = stack.pop()
+            total_steps += 1
             f = current_node.path_cost + problem.heuristic(current_node.state)
             
             if f > limit:
@@ -225,7 +227,7 @@ def IDA_Star(problem):
             visited_this_round.add(current_node.state)
             visited_all_rounds.add(current_node.state)
             
-            yield {"current": current_node, "frontier": [n for n, p in stack], "visited": set(visited_this_round), "path": None}
+            yield {"current": current_node, "frontier": [n for n, p in stack], "visited": set(visited_this_round), "path": None, "total_steps": total_steps}
             
             if problem.is_goal(current_node.state):
                 goal_node = current_node
@@ -237,7 +239,7 @@ def IDA_Star(problem):
                     stack.append((child, path_states + [child.state]))
                     
         if goal_node:
-            yield {"current": goal_node, "frontier": [n for n, p in stack], "visited": set(visited_this_round), "path": goal_node.path()}
+            yield {"current": goal_node, "frontier": [n for n, p in stack], "visited": set(visited_this_round), "path": goal_node.path(), "total_steps": total_steps}
             return
             
         if next_limit == float('inf'):
@@ -245,7 +247,7 @@ def IDA_Star(problem):
             
         limit = next_limit
         
-    yield {"current": None, "frontier": [], "visited": set(visited_all_rounds), "path": []}
+    yield {"current": None, "frontier": [], "visited": set(visited_all_rounds), "path": [], "total_steps": total_steps}
 
 # ----------------- UI WRAPPERS -----------------
 
@@ -275,7 +277,8 @@ def format_yield(step):
         "frontier": frontier_pos,
         "visited": visited_pos,
         "path": path_pos,
-        "status": status_text
+        "status": status_text,
+        "total_steps": step.get("total_steps")
     }
 
 def bfs(grid, start, goal):
