@@ -97,6 +97,14 @@ class BossWorld(BasePyGameWorld):
                             self.board[idx] = self.turn
                             self.scores = {}
                             self.check_game_state()
+                            if not self.game_over:
+                                next_player = self.player_x_btn.get_current() if self.turn == 1 else self.player_o_btn.get_current()
+                                if "Human" not in next_player:
+                                    self.is_simulating = True
+                                    if hasattr(self, 'btn_run'):
+                                        self.btn_run.set_text("Tạm dừng ⏸")
+                                        self.btn_run.bg_color = (241, 196, 15)
+                                    self.check_and_start_ai()
 
     def toggle_run(self):
         if self.is_simulating:
@@ -146,6 +154,19 @@ class BossWorld(BasePyGameWorld):
                 self.current_generator = None
                 self.current_state = None
                 self.check_game_state()
+                
+                if not self.game_over:
+                    next_player = self.player_x_btn.get_current() if self.turn == 1 else self.player_o_btn.get_current()
+                    if "Human" in next_player:
+                        self.stop_simulation()
+                        if hasattr(self, 'btn_run'):
+                            self.btn_run.set_text("Tự động chạy ▶")
+                            self.btn_run.bg_color = (46, 204, 113)
+                else:
+                    self.stop_simulation()
+                    if hasattr(self, 'btn_run'):
+                        self.btn_run.set_text("Tự động chạy ▶")
+                        self.btn_run.bg_color = (46, 204, 113)
 
     def update(self):
         if self.game_over:
@@ -200,6 +221,9 @@ class BossWorld(BasePyGameWorld):
         font_large = pygame.font.SysFont("Arial", int(cell_size * 0.7), bold=True)
         font_small = pygame.font.SysFont("Arial", int(cell_size * 0.25), bold=True)
         
+        mario_img = AssetManager().get("mario", size=(int(cell_size*0.8), int(cell_size*0.8)))
+        bowser_img = AssetManager().get("bowser", size=(int(cell_size*0.8), int(cell_size*0.8)))
+
         for i in range(9):
             r = i // 3
             c = i % 3
@@ -208,11 +232,17 @@ class BossWorld(BasePyGameWorld):
             
             val = self.board[i]
             if val == 1:
-                text = font_large.render("X", True, COLOR_RED)
-                surface.blit(text, text.get_rect(center=(cx, cy)))
+                if mario_img:
+                    surface.blit(mario_img, mario_img.get_rect(center=(cx, cy)))
+                else:
+                    text = font_large.render("X", True, COLOR_RED)
+                    surface.blit(text, text.get_rect(center=(cx, cy)))
             elif val == -1:
-                text = font_large.render("O", True, COLOR_GREEN)
-                surface.blit(text, text.get_rect(center=(cx, cy)))
+                if bowser_img:
+                    surface.blit(bowser_img, bowser_img.get_rect(center=(cx, cy)))
+                else:
+                    text = font_large.render("O", True, COLOR_GREEN)
+                    surface.blit(text, text.get_rect(center=(cx, cy)))
             else:
                 if i in self.scores:
                     score_val = self.scores[i]
@@ -233,13 +263,21 @@ class BossWorld(BasePyGameWorld):
         legend_y = adjusted_area.y + 40
         
         # X
-        x_text = pygame.font.SysFont("Arial", 20, bold=True).render("X", True, COLOR_RED)
-        surface.blit(x_text, (adjusted_area.x + 20, legend_y))
+        mario_img_small = AssetManager().get("mario", size=(24, 24))
+        if mario_img_small:
+            surface.blit(mario_img_small, (adjusted_area.x + 10, legend_y - 2))
+        else:
+            x_text = pygame.font.SysFont("Arial", 20, bold=True).render("X", True, COLOR_RED)
+            surface.blit(x_text, (adjusted_area.x + 20, legend_y))
         surface.blit(self.font.render("Người chơi (MAX)", True, COLOR_BLACK), (adjusted_area.x + 40, legend_y + 4))
         
         # O
-        o_text = pygame.font.SysFont("Arial", 20, bold=True).render("O", True, COLOR_GREEN)
-        surface.blit(o_text, (adjusted_area.x + 220, legend_y))
+        bowser_img_small = AssetManager().get("bowser", size=(24, 24))
+        if bowser_img_small:
+            surface.blit(bowser_img_small, (adjusted_area.x + 210, legend_y - 2))
+        else:
+            o_text = pygame.font.SysFont("Arial", 20, bold=True).render("O", True, COLOR_GREEN)
+            surface.blit(o_text, (adjusted_area.x + 220, legend_y))
         surface.blit(self.font.render("Bowser AI (MIN)", True, COLOR_BLACK), (adjusted_area.x + 240, legend_y + 4))
         
         # Score
