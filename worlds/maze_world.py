@@ -165,7 +165,11 @@ class MazeWorld(BasePyGameWorld):
             visited = state.get("visited", [])
             path = state.get("path")
             
-            self.stats["steps"] = len(visited)
+            if "total_steps" in state and state["total_steps"] is not None:
+                self.stats["steps"] = state["total_steps"]
+            else:
+                self.stats["steps"] = len(visited)
+                
             self.stats["visited"] = len(visited)
             
             for r, c in visited:
