@@ -4,7 +4,7 @@ echo =========================================
 echo       Super Mario AI Visualizer 
 echo =========================================
 
-:: 1. Tim lenh Python hop le tren may tinh
+:: 1. Tim lenh Python hop le tren may
 set PYTHON_CMD=
 
 :: Uu tien kiem tra Microsoft Store Python truoc (nham tranh loi xung dot moi truong khac nhu MSYS2)
