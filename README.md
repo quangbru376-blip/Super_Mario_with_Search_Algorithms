@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🍄 Super Mario AI Visualizer
 
 Chào mừng bạn đến với dự án **Super Mario AI Visualizer**! Đây là một ứng dụng mô phỏng trực quan các thuật toán Trí tuệ Nhân tạo (Artificial Intelligence) cốt lõi thông qua giao diện đồ họa được xây dựng bằng `pygame`. Dự án lấy cảm hứng từ thế giới của tựa game Super Mario nổi tiếng nhằm giúp việc học và quan sát thuật toán trở nên sinh động và dễ hiểu hơn.
@@ -100,3 +101,7 @@ Final_project_pygame/
 ---
 
 **Chúc bạn có những trải nghiệm thú vị với Trí tuệ Nhân tạo trong thế giới của Super Mario! 🍄✨**
+=======
+hi
+alo
+>>>>>>> dc2481d235698b7bcd24b0b49afd3fcf96c8598e
