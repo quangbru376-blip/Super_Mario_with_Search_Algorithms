@@ -1,7 +1,7 @@
 import pygame
 from .base_world import BasePyGameWorld
 from config import VACUUM_MAP, AssetManager, COLOR_BRICK, COLOR_COIN, COLOR_RED, COLOR_DARK, COLOR_PATH, COLOR_WHITE, COLOR_BLACK
-from algorithms.complex_env import four_combined_bfs, multiverse_search, and_or_search
+from algorithms.complex_env import sensorless_bfs, partially_observable_bfs, and_or_search
 from ui import ComboBox, Button, LogPanel
 
 class FogWorld(BasePyGameWorld):
@@ -82,9 +82,9 @@ class FogWorld(BasePyGameWorld):
     def get_selected_generator(self):
         algo_name = self.algo_btn.get_current()
         if algo_name == "Sensorless":
-            return four_combined_bfs(self.grid, self.start_pos, self.current_coins)
+            return sensorless_bfs(self.grid, self.start_pos, self.current_coins)
         elif algo_name == "Partially Observable":
-            return multiverse_search(self.grid, self.start_pos, self.initial_coins)
+            return partially_observable_bfs(self.grid, self.start_pos, self.initial_coins)
         elif algo_name == "And-Or Search":
             return and_or_search(self.grid, self.start_pos, self.initial_coins)
         return None

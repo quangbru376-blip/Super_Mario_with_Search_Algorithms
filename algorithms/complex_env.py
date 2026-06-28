@@ -1,8 +1,76 @@
-import heapq
 import random
 from collections import deque
+from .core import Problem
 
-def four_combined_bfs(grid, start=None, initial_coins=None):
+# ==========================================================
+# SENSORLESS SEARCH (BELIEF STATE SEARCH)
+# ==========================================================
+
+class SensorlessProblem(Problem):
+    def __init__(self, initial_state, grid):
+        super().__init__(initial_state)
+        self.grid = grid
+        self.rows = len(grid)
+        self.cols = len(grid[0])
+        
+    def actions(self, state):
+        return [(-1, 0, "Lên"), (0, -1, "Trái"), (1, 0, "Xuống"), (0, 1, "Phải")]
+        
+    def result(self, state, action):
+        dr, dc, name = action
+        next_state = []
+        for r, c, coins in state:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < self.rows and 0 <= nc < self.cols and self.grid[nr][nc] != 1:
+                ncoins = set(coins)
+                if (nr, nc) in ncoins: ncoins.remove((nr, nc))
+                next_state.append((nr, nc, frozenset(ncoins)))
+            else:
+                next_state.append((r, c, coins))
+        return tuple(next_state)
+        
+    def is_goal(self, state):
+        return all(len(m[2]) == 0 for m in state)
+
+def create_yield_state(marios_state, status):
+    state = {"status": status}
+    for i in range(4):
+        state[f"mario{i+1}"] = {"current": (marios_state[i][0], marios_state[i][1]), "coins_left": list(marios_state[i][2])}
+    return state
+
+def Belief_State_BFS(problem):
+    initial_state = problem.initial_state
+    queue = deque([(initial_state, [])])
+    visited = {initial_state}
+    
+    yield create_yield_state(initial_state, "[BFS Đồng bộ] Đang tính toán đường đi đồng bộ (BFS)...")
+    
+    found_path = None
+    while queue:
+        curr_state, path = queue.popleft()
+        if problem.is_goal(curr_state):
+            found_path = path
+            break
+            
+        for action in problem.actions(curr_state):
+            next_state = problem.result(curr_state, action)
+            if next_state != curr_state and next_state not in visited:
+                visited.add(next_state)
+                queue.append((next_state, path + [(action, next_state)]))
+                
+    if found_path is None:
+        yield create_yield_state(initial_state, "[BFS Đồng bộ] Không tìm thấy đường đi chung!")
+        return
+        
+    step = 1
+    for action, nxt_state in found_path:
+        dr, dc, name = action
+        yield create_yield_state(nxt_state, f"[BFS Đồng bộ] Bước {step}: Đi {name}. Còn lại: " + ", ".join([str(len(m[2])) for m in nxt_state]) + " xu")
+        step += 1
+        
+    yield create_yield_state(found_path[-1][1], "[BFS Đồng bộ] Hoàn tất! Cả 4 Mario đều đã dọn sạch xu bằng một chuỗi hành động chung.")
+
+def sensorless_bfs(grid, start=None, initial_coins=None):
     rows, cols = len(grid), len(grid[0])
     valid_positions = [(r, c) for r in range(rows) for c in range(cols) if grid[r][c] != 1]
     
@@ -13,7 +81,6 @@ def four_combined_bfs(grid, start=None, initial_coins=None):
         
     initial_coins_set = frozenset(initial_coins) if initial_coins else frozenset()
     
-    # State: tuple of 4 elements, each is (r, c, coins_left)
     initial_state = []
     for pos in start_positions:
         coins = set(initial_coins_set)
@@ -22,82 +89,129 @@ def four_combined_bfs(grid, start=None, initial_coins=None):
         initial_state.append((pos[0], pos[1], frozenset(coins)))
     initial_state = tuple(initial_state)
     
-    queue = deque([(initial_state, [])])
-    visited = {initial_state}
-    actions = [(-1, 0, "Lên"), (0, -1, "Trái"), (1, 0, "Xuống"), (0, 1, "Phải")]
-    
-    def create_yield_state(marios_state, status):
-        state = {"status": status}
-        for i in range(4):
-            state[f"mario{i+1}"] = {"current": (marios_state[i][0], marios_state[i][1]), "coins_left": list(marios_state[i][2])}
+    problem = SensorlessProblem(initial_state, grid)
+    for step in Belief_State_BFS(problem):
+        yield step
+
+# ==========================================================
+# PARTIALLY OBSERVABLE SEARCH (MULTIVERSE)
+# ==========================================================
+
+class PartiallyObservableProblem(Problem):
+    def __init__(self, initial_state, grid):
+        super().__init__(initial_state)
+        self.grid = grid
+        self.rows = len(grid)
+        self.cols = len(grid[0])
+        
+    def actions(self, state):
+        return [(-1, 0, "Lên"), (1, 0, "Xuống"), (0, -1, "Trái"), (0, 1, "Phải")]
+        
+    def result(self, state, action):
+        dr, dc, name = action
+        r, c, coins = state
+        nr, nc = r + dr, c + dc
+        if 0 <= nr < self.rows and 0 <= nc < self.cols and self.grid[nr][nc] != 1:
+            ncoins = set(coins)
+            if (nr, nc) in ncoins: ncoins.remove((nr, nc))
+            return (nr, nc, frozenset(ncoins))
         return state
-
-    yield create_yield_state(initial_state, "[BFS Đồng bộ] Đang tính toán đường đi đồng bộ (BFS)...")
-    
-    found_path = None
-    
-    while queue:
-        curr_state, path = queue.popleft()
         
-        # Check if all marios have 0 coins
-        if all(len(m[2]) == 0 for m in curr_state):
-            found_path = path
-            break
-            
-        for dr, dc, name in actions:
-            next_state = []
-            moved = False
-            for r, c, coins in curr_state:
-                nr, nc = r + dr, c + dc
-                if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] != 1:
-                    moved = True
-                    ncoins = set(coins)
-                    if (nr, nc) in ncoins: ncoins.remove((nr, nc))
-                    next_state.append((nr, nc, frozenset(ncoins)))
-                else:
-                    next_state.append((r, c, coins))
-            if moved:
-                next_state = tuple(next_state)
-                if next_state not in visited:
-                    visited.add(next_state)
-                    queue.append((next_state, path + [(name, next_state)]))
-                    
-    if found_path is None:
-        yield create_yield_state(initial_state, "[BFS Đồng bộ] Không tìm thấy đường đi chung!")
-        return
+    def is_goal(self, state):
+        return len(state[2]) == 0
         
-    step = 1
-    for name, nxt_state in found_path:
-        yield create_yield_state(nxt_state, f"[BFS Đồng bộ] Bước {step}: Đi {name}. Còn lại: " + ", ".join([str(len(m[2])) for m in nxt_state]) + " xu")
-        step += 1
-        
-    yield create_yield_state(found_path[-1][1], "[BFS Đồng bộ] Hoàn tất! Cả 4 Mario đều đã dọn sạch xu bằng một chuỗi hành động chung.")
-
-
-def multiverse_search(grid, start, initial_coins):
-    """
-    Tìm kiếm Đa vũ trụ: Khởi tạo 16 vũ trụ cho tất cả vị trí khả dĩ.
-    Mario thật (ở vị trí start) sẽ tìm đường ăn toàn bộ xu bằng BFS.
-    Tại mỗi bước di chuyển, tất cả các vũ trụ cùng thực hiện thao tác tương tự.
-    Sau mỗi bước, kiểm tra cảm biến: vũ trụ nào có cảm biến không khớp với thế giới thật sẽ bị loại (faded -> invalid).
-    """
-    rows, cols = len(grid), len(grid[0])
-    
-    # Hàm lấy cảm biến (Kề cận 4 hướng)
-    def get_sensor(pos, current_coins):
-        r, c = pos
+    def get_percept(self, state):
+        r, c, coins = state
         reading = []
         for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             nr, nc = r+dr, c+dc
-            if (nr, nc) in current_coins:
-                reading.append("C") # Xu
-            elif 0 <= nr < rows and 0 <= nc < cols:
-                reading.append("W" if grid[nr][nc] == 1 else "0") # Vật cản hoặc Trống
+            if (nr, nc) in coins:
+                reading.append("C")
+            elif 0 <= nr < self.rows and 0 <= nc < self.cols:
+                reading.append("W" if self.grid[nr][nc] == 1 else "0")
             else:
-                reading.append("OOB") # Rìa bản đồ
+                reading.append("OOB")
         return tuple(reading)
 
-    # Khởi tạo các vũ trụ
+def Multiverse_BFS(problem, true_start, universes):
+    true_pos = true_start[0:2]
+    true_coins = set(true_start[2])
+    
+    def yield_state(status):
+        return {
+            "true_pos": true_pos,
+            "universes": {k: {"current": v["current"], "coins_left": list(v["coins_left"]), "status": v["status"]} for k, v in universes.items()},
+            "status": status
+        }
+        
+    true_sensor = problem.get_percept((true_pos[0], true_pos[1], frozenset(true_coins)))
+    for u_start, u_data in universes.items():
+        if u_data["status"] == "active":
+            u_state = (u_data["current"][0], u_data["current"][1], frozenset(u_data["coins_left"]))
+            if problem.get_percept(u_state) != true_sensor:
+                u_data["status"] = "faded"
+                
+    yield yield_state("[Đa vũ trụ] Khởi tạo Đa vũ trụ. Lọc cảm biến ban đầu.")
+    
+    for u_start, u_data in universes.items():
+        if u_data["status"] == "faded": u_data["status"] = "invalid"
+
+    while true_coins:
+        queue = deque([(true_pos, [])])
+        visited = {true_pos}
+        found_path = None
+        
+        while queue:
+            curr, p = queue.popleft()
+            if curr in true_coins:
+                found_path = p
+                break
+            for action in problem.actions(None):
+                dr, dc, name = action
+                nr, nc = curr[0] + dr, curr[1] + dc
+                if 0 <= nr < problem.rows and 0 <= nc < problem.cols and problem.grid[nr][nc] != 1:
+                    if (nr, nc) not in visited:
+                        visited.add((nr, nc))
+                        queue.append(((nr, nc), p + [(dr, dc, name)]))
+                        
+        if not found_path:
+            yield yield_state("[Đa vũ trụ] Không tìm thấy đường tới xu. Kết thúc.")
+            break
+            
+        for dr, dc, name in found_path:
+            action = (dr, dc, name)
+            true_state = problem.result((true_pos[0], true_pos[1], frozenset(true_coins)), action)
+            true_pos = true_state[0:2]
+            true_coins = set(true_state[2])
+            
+            for u_start, u_data in universes.items():
+                if u_data["status"] == "active":
+                    u_state = (u_data["current"][0], u_data["current"][1], frozenset(u_data["coins_left"]))
+                    next_u_state = problem.result(u_state, action)
+                    u_data["current"] = next_u_state[0:2]
+                    u_data["coins_left"] = set(next_u_state[2])
+                    
+            yield yield_state(f"[Đa vũ trụ] Đi {name}. Còn {len(true_coins)} xu thật.")
+            
+            true_sensor = problem.get_percept((true_pos[0], true_pos[1], frozenset(true_coins)))
+            has_faded = False
+            for u_start, u_data in universes.items():
+                if u_data["status"] == "active":
+                    u_state = (u_data["current"][0], u_data["current"][1], frozenset(u_data["coins_left"]))
+                    if problem.get_percept(u_state) != true_sensor:
+                        u_data["status"] = "faded"
+                        has_faded = True
+                        
+            if has_faded:
+                yield yield_state("[Đa vũ trụ] Cảm biến! Làm mờ các vũ trụ sai lệnh.")
+                for u_start, u_data in universes.items():
+                    if u_data["status"] == "faded":
+                        u_data["status"] = "invalid"
+
+    yield yield_state("[Đa vũ trụ] Hoàn tất! Mario thật đã gom hết xu.")
+
+def partially_observable_bfs(grid, start, initial_coins):
+    rows, cols = len(grid), len(grid[0])
     universes = {}
     for r in range(rows):
         for c in range(cols):
@@ -113,157 +227,70 @@ def multiverse_search(grid, start, initial_coins):
                     "coins_left": set(initial_coins),
                     "status": "invalid"
                 }
-
-    true_pos = start
+                
     true_coins = set(initial_coins)
-    
-    # Kiểm tra ăn xu ở vị trí xuất phát cho tất cả các vũ trụ
-    if true_pos in true_coins:
-        true_coins.remove(true_pos)
+    if start in true_coins: true_coins.remove(start)
     for u_start, u_data in universes.items():
         if u_data["status"] == "active" and u_data["current"] in u_data["coins_left"]:
             u_data["coins_left"].remove(u_data["current"])
+            
+    problem = PartiallyObservableProblem((start[0], start[1], frozenset(true_coins)), grid)
+    for step in Multiverse_BFS(problem, (start[0], start[1], frozenset(true_coins)), universes):
+        yield step
 
-    # Lọc ban đầu
-    true_sensor = get_sensor(true_pos, true_coins)
-    for u_start, u_data in universes.items():
-        if u_data["status"] == "active":
-            if get_sensor(u_data["current"], u_data["coins_left"]) != true_sensor:
-                u_data["status"] = "faded"
+# ==========================================================
+# AND-OR SEARCH (NON-DETERMINISTIC ENVIRONMENT)
+# ==========================================================
 
-    yield {
-        "true_pos": true_pos,
-        "universes": {k: {"current": v["current"], "coins_left": list(v["coins_left"]), "status": v["status"]} for k, v in universes.items()},
-        "status": "[Đa vũ trụ] Khởi tạo Đa vũ trụ. Lọc cảm biến ban đầu."
-    }
-
-    # Chuyển faded thành invalid
-    for u_start, u_data in universes.items():
-        if u_data["status"] == "faded":
-            u_data["status"] = "invalid"
-
-    from collections import deque
-
-    while true_coins:
-        # Dùng BFS để tìm xu gần nhất cho True Mario
-        queue = deque([(true_pos, [])])
-        visited = {true_pos}
-        found_path = None
+class NonDeterministicProblem(Problem):
+    def __init__(self, initial_state, grid):
+        super().__init__(initial_state)
+        self.grid = grid
+        self.rows = len(grid)
+        self.cols = len(grid[0])
         
-        while queue:
-            curr, p = queue.popleft()
-            if curr in true_coins:
-                found_path = p
-                break
-            for dr, dc, name in [(-1, 0, "Lên"), (1, 0, "Xuống"), (0, -1, "Trái"), (0, 1, "Phải")]:
-                nr, nc = curr[0] + dr, curr[1] + dc
-                if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] != 1:
-                    if (nr, nc) not in visited:
-                        visited.add((nr, nc))
-                        queue.append(((nr, nc), p + [(dr, dc, name)]))
-                        
-        if not found_path:
-            yield {
-                "true_pos": true_pos,
-                "universes": {k: {"current": v["current"], "coins_left": list(v["coins_left"]), "status": v["status"]} for k, v in universes.items()},
-                "status": "[Đa vũ trụ] Không tìm thấy đường tới xu. Kết thúc."
-            }
-            break
-
-        for dr, dc, name in found_path:
-            # 1. Di chuyển True Mario
-            true_pos = (true_pos[0] + dr, true_pos[1] + dc)
-            if true_pos in true_coins:
-                true_coins.remove(true_pos)
-                
-            # 2. Đồng bộ di chuyển cho các vũ trụ
-            for u_start, u_data in universes.items():
-                if u_data["status"] == "active":
-                    r, c = u_data["current"]
-                    nr, nc = r + dr, c + dc
-                    if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] != 1:
-                        u_data["current"] = (nr, nc)
-                    else:
-                        u_data["current"] = (r, c) # Đụng tường, đứng lại
-                        
-                    if u_data["current"] in u_data["coins_left"]:
-                        u_data["coins_left"].remove(u_data["current"])
-                        
-            yield {
-                "true_pos": true_pos,
-                "universes": {k: {"current": v["current"], "coins_left": list(v["coins_left"]), "status": v["status"]} for k, v in universes.items()},
-                "status": f"[Đa vũ trụ] Đi {name}. Còn {len(true_coins)} xu thật."
-            }
-
-            # 3. Lấy cảm biến và làm mờ các vũ trụ sai
-            true_sensor = get_sensor(true_pos, true_coins)
-            has_faded = False
-            for u_start, u_data in universes.items():
-                if u_data["status"] == "active":
-                    if get_sensor(u_data["current"], u_data["coins_left"]) != true_sensor:
-                        u_data["status"] = "faded"
-                        has_faded = True
-                        
-            if has_faded:
-                yield {
-                    "true_pos": true_pos,
-                    "universes": {k: {"current": v["current"], "coins_left": list(v["coins_left"]), "status": v["status"]} for k, v in universes.items()},
-                    "status": "[Đa vũ trụ] Cảm biến! Làm mờ các vũ trụ sai lệnh."
-                }
-                # Chuyển faded thành invalid
-                for u_start, u_data in universes.items():
-                    if u_data["status"] == "faded":
-                        u_data["status"] = "invalid"
-
-    # Hoàn thành
-    yield {
-        "true_pos": true_pos,
-        "universes": {k: {"current": v["current"], "coins_left": list(v["coins_left"]), "status": v["status"]} for k, v in universes.items()},
-        "status": "[Đa vũ trụ] Hoàn tất! Mario thật đã gom hết xu."
-    }
-
-
-def and_or_search(grid, start, initial_coins):
-    """
-    Sử dụng And-Or Search để tìm một kế hoạch (plan) thu thập tất cả đồng xu.
-    Đã bổ sung 30% tỷ lệ dẫm bẫy trong phase thực thi.
-    """
-    rows, cols = len(grid), len(grid[0])
-    
-    def get_results(state, action):
+    def actions(self, state):
+        return [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        
+    def results(self, state, action):
         r, c, coins = state
         dr, dc = action
         nr, nc = r + dr, c + dc
         
-        if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] != 1:
+        if 0 <= nr < self.rows and 0 <= nc < self.cols and self.grid[nr][nc] != 1:
             new_coins = set(coins)
             if (nr, nc) in new_coins:
                 new_coins.remove((nr, nc))
             return [(nr, nc, frozenset(new_coins))]
         return [(r, c, coins)]
         
+    def is_goal(self, state):
+        return len(state[2]) == 0
+
+def And_Or_Graph_Search(problem):
     def or_search(state, path):
-        r, c, coins = state
-        if not coins:
-            return []
-        if state in path:
-            return None
-            
-        for action in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            results = get_results(state, action)
+        if problem.is_goal(state): return []
+        if state in path: return None
+        for action in problem.actions(state):
+            results = problem.results(state, action)
             plan = and_search(results, path + [state])
             if plan is not None:
                 return [action, plan]
         return None
         
-    def and_search(results, path):
+    def and_search(states, path):
         plan = {}
-        for s in results:
+        for s in states:
             p = or_search(s, path)
             if p is None: return None
             plan[s] = p
         return plan
+        
+    return or_search(problem.initial_state, [])
 
+def and_or_search(grid, start, initial_coins):
+    problem = NonDeterministicProblem((start[0], start[1], frozenset(initial_coins)), grid)
+    
     yield {
         "current": start,
         "path": [start],
@@ -271,7 +298,7 @@ def and_or_search(grid, start, initial_coins):
         "status": "[And-Or] Khởi chạy And-Or Search xây dựng cây kế hoạch..."
     }
     
-    plan = or_search((start[0], start[1], frozenset(initial_coins)), [])
+    plan = And_Or_Graph_Search(problem)
     
     if plan is None:
         yield {
@@ -282,14 +309,12 @@ def and_or_search(grid, start, initial_coins):
         }
         return
         
-    current_state = (start[0], start[1], frozenset(initial_coins))
+    current_state = problem.initial_state
     path_coords = [start]
     current_plan = plan
     
     while current_plan:
         action, subplan = current_plan
-        
-        # 30% trap chance
         if random.random() < 0.3:
             yield {
                 "current": current_state[:2],
@@ -298,11 +323,9 @@ def and_or_search(grid, start, initial_coins):
                 "status": f"[And-Or] Đạp bẫy! Đứng im. (Thử lại {action}...)",
                 "trapped": True
             }
-            continue # Retry the same action
+            continue
             
-        results = get_results(current_state, action)
-        next_state = results[0]
-        
+        next_state = problem.results(current_state, action)[0]
         current_state = next_state
         current_plan = subplan[next_state]
         
