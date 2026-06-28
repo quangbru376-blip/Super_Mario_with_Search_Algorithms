@@ -1,0 +1,27 @@
+Hướng dẫn tạo Nút Pixel Art (Bộ Quy tắc cho Agent)
+
+Để tạo ra một nút có vẻ ngoài như trong ảnh pixel art cổ điển, hãy tuân thủ nghiêm ngặt các quy tắc sau:
+
+1. Kiểu nghệ thuật (Art Style): Flat design, pixel art kiểu UI game cổ điển. Không sử dụng hiệu ứng nổi (bevel) mượt hay đổ bóng (shadow) mềm mại hiện đại.
+2. Màu sắc: Sử dụng một bảng màu rất cụ thể, hạn chế và phẳng.
+3. Cấu trúc nhiều lớp (Layered Structure): Bao gồm nhiều lớp xếp chồng lên nhau, tạo độ dày cứng cáp.
+4. Phông chữ (Typography): Bắt buộc phải là phông chữ bitmap/pixel art thực sự, không phải phông chữ vector sắc nét.
+5. Căn chỉnh (Alignment): Hoàn hảo về pixel.
+
+--- BỘ QUY TẮC CHI TIẾT ---
+
+Bối cảnh:
+- Nền màn hình: Sử dụng một màu phẳng, rất nhạt (ví dụ: RGB 230, 240, 255).
+
+Cấu trúc Nút (từ dưới lên trên):
+- Lớp 1 (Lớp đổ bóng cứng): Một khối màu tối, phẳng (ví dụ: đen hoặc xám rất đậm), nằm lệch xuống dưới và sang phải một chút so với mặt nút chính, tạo khối 3D cứng cáp.
+- Lớp 2 (Viền): Một viền đen sắc nét (RGB 0, 0, 0) bao quanh mặt nút. Ở bên trong viền đen này, thường có thêm một đường viền sáng (xám nhạt) ở cạnh trên và cạnh trái, và một đường viền tối (xám đậm) ở cạnh dưới và cạnh phải để tạo hiệu ứng nổi khối.
+- Lớp 3 (Mặt): Một hình chữ nhật màu xám trung bình (ví dụ: RGB 100, 100, 100) làm nền chính cho nút.
+
+Văn bản:
+- Phông chữ: CHỈ sử dụng phông chữ bitmap/pixel art.
+- Màu văn bản: Màu trắng hoặc xám rất nhạt. Phải có một bóng đổ (drop shadow) màu xám đậm lệch 1-2 pixel xuống dưới và sang phải để chữ nổi bật trên nền xám.
+- Căn chỉnh: Căn giữa hoàn hảo theo chiều ngang và chiều dọc.
+
+Độ hoàn thiện:
+- Cạnh sắc nét: KHÔNG được sử dụng bất kỳ hiệu ứng làm mịn (anti-aliasing), mờ hoặc gradient nào. Mọi cạnh đều phải sắc nét đến từng pixel.
