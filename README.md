@@ -65,9 +65,13 @@ pip install -r requirements.txt
 ### Bước 3: Chạy ứng dụng
 Khởi động giao diện chính của chương trình:
 ```bash
-python main.py
+run_game.bat
 ```
-*(Bạn cũng có thể chạy bằng file `run_game.bat` trên Windows hoặc `run_game.sh` trên Linux/macOS).*
+Cho Windows hoặc
+```bash
+run_game.sh
+```
+Cho Linux/macOS
 
 ---
 
