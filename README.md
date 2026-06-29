@@ -27,21 +27,21 @@ Dự án được chia thành 6 Màn chơi khác nhau, mỗi màn chơi biểu d
 
 ### 🌟 WORLD 4: Complex Env (Môi trường phức tạp)
 *Mario phải sử dụng thuật toán để tìm đường nhặt hết xu trong môi trường không chắc chắn, bị sương mù che khuất hoặc không biết rõ vị trí của mình.*
-1. ***Sensorless Search:*** Là thuật toán giải quyết bài toán khi Mario bị "mù" hoàn toàn thông tin về vị trí. Thay vì tìm kiếm trên các trạng thái đơn lẻ, thuật toán thao tác trên các tập trạng thái niềm tin (belief states), từ đó đưa ra một chuỗi hành động đảm bảo Mario chắc chắn đến đích dù ban đầu đang đứng ở bất kỳ đâu.
+1. ***Sensorless Search:*** Là thuật toán giải quyết bài toán khi Mario bị "mù" hoàn toàn thông tin về vị trí. Thay vì tìm kiếm trên các trạng thái đơn lẻ, thuật toán thao tác trên các tập belief states, từ đó đưa ra một chuỗi hành động đảm bảo Mario chắc chắn đến đích dù ban đầu đang đứng ở bất kỳ đâu.
 2. ***Partially Observable:*** Là phương pháp áp dụng khi tầm nhìn của Mario bị giới hạn. Dựa vào các thông tin thu thập được từ cảm biến (sensor) tại mỗi bước đi, thuật toán sẽ liên tục cập nhật, suy luận vị trí hiện tại trong "đa vũ trụ" các khả năng để ra quyết định di chuyển tiếp theo một cách hợp lý nhất.
-3. ***And-Or Search:*** Là thuật toán lập kế hoạch dành cho môi trường phi định định (nondeterministic), nơi một hành động có thể dẫn đến nhiều kết quả khác nhau (ví dụ: trượt băng, gió thổi ngẫu nhiên). Thuật toán sẽ lập ra một kế hoạch dự phòng (contingency plan) dạng cây And-Or để đảm bảo Mario luôn có phương án xử lý mọi cạm bẫy có thể xảy ra.
+3. ***And-Or Search:*** Là thuật toán lập kế hoạch dành cho môi trường phi định định (nondeterministic), nơi một hành động có thể dẫn đến nhiều kết quả khác nhau. Thuật toán sẽ lập ra một kế hoạch dự phòng dạng cây And-Or để đảm bảo Mario luôn có phương án xử lý mọi cạm bẫy có thể xảy ra.
 
 ### 🌟 WORLD 5: CSP Solver (Bài toán thỏa mãn ràng buộc)
 *Sử dụng các ràng buộc của bài toán, Mario tô màu các ô bản đồ sao cho thỏa mãn ràng buộc.*
-1. ***Backtracking Search*** (Tìm kiếm quay lui): Là một dạng tìm kiếm theo chiều sâu (DFS) chuyên dụng cho CSP. Thuật toán sẽ thử gán màu cho từng ô bản đồ một, nếu phát hiện một ô vi phạm ràng buộc (trùng màu với ô hàng xóm), nó sẽ quay lui (backtrack) lên bước trước đó để thử một màu khác.
-2. ***Forward Checking*** (Kiểm tra hướng tiến): Là kỹ thuật tối ưu hóa kết hợp với Backtracking. Mỗi khi Mario tô một màu, thuật toán sẽ nhìn trước và loại bỏ màu đó khỏi danh sách các màu hợp lệ của các ô lân cận chưa được tô. Điều này giúp phát hiện sớm các ngõ cụt và giảm thiểu đáng kể số lần quay lui.
-3. ***Min Conflicts*** (Xung đột tối thiểu): Là thuật toán tìm kiếm cục bộ (local search) cho CSP. Thuật toán bắt đầu bằng cách gán màu ngẫu nhiên cho toàn bộ bản đồ. Sau đó ở mỗi bước, Mario sẽ chọn lại màu cho một ô đang bị vi phạm sao cho số lượng xung đột (ràng buộc bị phá vỡ) giảm xuống mức thấp nhất cho đến khi bài toán được giải.
+1. ***Backtracking Search***: Là một dạng tìm kiếm theo chiều sâu chuyên dụng cho CSP. Thuật toán sẽ thử gán màu cho từng ô bản đồ một, nếu phát hiện một ô vi phạm ràng buộc, nó sẽ quay lui bước trước đó để thử một màu khác.
+2. ***Forward Checking***: Là kỹ thuật tối ưu hóa kết hợp với **Backtracking**. Mỗi khi Mario tô một màu, thuật toán sẽ nhìn trước và loại bỏ màu đó khỏi danh sách các màu hợp lệ của các ô lân cận chưa được tô. Điều này giúp phát hiện sớm các ngõ cụt và giảm thiểu đáng kể số lần quay lui.
+3. ***Min Conflicts***: Là thuật toán tìm kiếm cục bộ cho CSP. Thuật toán bắt đầu bằng cách gán màu ngẫu nhiên cho toàn bộ bản đồ. Sau đó ở mỗi bước, Mario sẽ chọn lại màu cho một ô đang bị vi phạm sao cho số lượng xung đột giảm xuống mức thấp nhất cho đến khi bài toán được giải.
 
 ### 🌟 WORLD 6: Boss Battle (Đối kháng)
 *Mario sẽ đối đầu với Boss Bowser được lập trình sử dụng các thuật toán đối kháng qua trò chơi Cờ Caro 3x3.*
 1. ***Minimax***: Là thuật toán ra quyết định dựa trên cây trò chơi, giả định cả Mario (MAX) và Bowser (MIN) đều chơi một cách hoàn hảo nhất. Thuật toán sẽ duyệt qua toàn bộ các diễn biến có thể xảy ra, sau đó chọn nước đi tối đa hóa lợi thế cho bản thân và tối thiểu hóa lợi thế của đối thủ.
-2. ***Alpha-Beta Pruning*** (Tỉa nhánh Alpha-Beta): Là một bản nâng cấp tối ưu của Minimax. Bằng cách sử dụng hai tham số Alpha và Beta để theo dõi điểm số, thuật toán sẽ cắt bỏ (tỉa) những nhánh cây trò chơi chắc chắn không làm thay đổi kết quả cuối cùng. Điều này giúp Bowser tính toán nước đi nhanh hơn và nhìn sâu hơn vào tương lai.
-3. ***Expectimax***: Là thuật toán áp dụng khi đối thủ không hành động hoàn hảo hoặc môi trường có yếu tố ngẫu nhiên (ví dụ: Bowser tung xúc xắc để quyết định đòn đánh). Thay vì luôn chọn giá trị xấu nhất do đối thủ gây ra (MIN), thuật toán sẽ tính giá trị kỳ vọng (trung bình có trọng số) của các nhánh con để đưa ra quyết định linh hoạt và thực tế hơn.
+2. ***Alpha-Beta Pruning***: Là một bản nâng cấp tối ưu của Minimax. Bằng cách sử dụng hai tham số Alpha và Beta để theo dõi điểm số, thuật toán sẽ cắt bỏ những nhánh cây trò chơi chắc chắn không làm thay đổi kết quả cuối cùng. Điều này giúp Bowser tính toán nước đi nhanh hơn và nhìn sâu hơn vào tương lai.
+3. ***Expectimax***: Là thuật toán áp dụng khi đối thủ không hành động hoàn hảo hoặc môi trường có yếu tố ngẫu nhiên. Thay vì luôn chọn giá trị xấu nhất do đối thủ gây ra (MIN), thuật toán sẽ tính *giá trị kỳ vọng* của các nhánh con để đưa ra quyết định linh hoạt và thực tế hơn.
 
 ---
 
