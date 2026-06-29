@@ -3,7 +3,7 @@
 Dự án **Super Mario AI Visualizer** là một ứng dụng mô phỏng các thuật toán Trí tuệ Nhân tạo cốt lõi thông qua giao diện đồ họa được xây dựng bằng `pygame`. Dự án được lấy cảm hứng từ thế giới của tựa game Super Mario nhằm giúp việc học tập và quan sát thuật toán trở nên sinh động và dễ dàng hơn.
 
 
-![Demo Super Mario AI Visualizer](link_anh_demo_tong_quan.gif)
+![Demo Super Mario AI Visualizer](https://github.com/quangbru376-blip/Super_Mario_with_Search_Algorithms/blob/main/gif/menu.gif)
 ---
 
 ## 🎮 Các Thế giới Mô phỏng (Worlds) & Thuật toán
