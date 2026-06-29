@@ -56,14 +56,9 @@ git clone https://github.com/quangbru376-blip/Super_Mario_with_Search_Algorithms
 cd Final_project_pygame
 ```
 
-### Bước 2: Cài đặt các thư viện phụ thuộc
-Sử dụng `pip` để cài đặt các package cần thiết (như `pygame`, `opencv-python`, ...):
-```bash
-pip install -r requirements.txt
-```
+### Bước 2: Chạy ứng dụng
+Khởi động giao diện chính của chương trình, 2 file điểm vào chương trình sau đã tích hợp sẵn trình kiểm tra thư viện, khởi tạo môi trường ảo (venv) và chạy chương trình
 
-### Bước 3: Chạy ứng dụng
-Khởi động giao diện chính của chương trình:
 ```bash
 run_game.bat
 ```
