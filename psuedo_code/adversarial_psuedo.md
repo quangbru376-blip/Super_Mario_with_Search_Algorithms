@@ -1,4 +1,5 @@
 ### Minimax
+```python
 def Minimax_Decision(state):
     return argmax(actions, key=lambda a: Min_Value(Result(state, a)))
 
@@ -15,8 +16,11 @@ def Min_Value(state):
     for action in Actions(state):
         v = min(v, Max_Value(Result(state, action)))
     return v
+```
 ---
+
 ### Alpha-Beta Prunning
+```python
 def Alpha_Beta_Search(state):
     v = Max_Value(state, -infinity, +infinity)
     return action_leading_to_v
@@ -38,8 +42,11 @@ def Min_Value(state, alpha, beta):
         if v <= alpha: return v
         beta = min(beta, v)
     return v
+```
 ---
+
 ### Expectimax
+```python
 def Expectimax_Decision(state):
     return argmax(actions, key=lambda a: Expect_Value(Result(state, a)))
 
@@ -51,3 +58,4 @@ def Expect_Value(state):
     for action in actions:
         v += probability * Max_Value(Result(state, action))
     return v
+```
