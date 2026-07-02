@@ -42,7 +42,6 @@ class GridPathfindingProblem(Problem):
             return 0
         return heuristic(state, self.goal)
 
-# ----------------- GENERIC ALGORITHMS -----------------
 
 def BFS(problem):
     node = Node(state=problem.initial_state)
@@ -50,7 +49,7 @@ def BFS(problem):
         yield {"current": node, "frontier": [], "visited": set(), "path": node.path()}
         return
         
-    frontier = [node] # Queue
+    frontier = [node]
     explored = set()
     
     while frontier:
@@ -249,7 +248,6 @@ def IDA_Star(problem):
         
     yield {"current": None, "frontier": [], "visited": set(visited_all_rounds), "path": [], "total_steps": total_steps}
 
-# ----------------- UI WRAPPERS -----------------
 
 def format_yield(step):
     current_pos = step["current"].state if step["current"] else None

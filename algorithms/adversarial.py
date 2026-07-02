@@ -30,7 +30,6 @@ class TicTacToeGame(Game):
             return 0 # Draw
         return None # Not finished
 
-# ----------------- GENERIC ALGORITHMS -----------------
 
 def Min_Value(game, state):
     if game.is_terminal(state): return game.utility(state)
@@ -181,7 +180,6 @@ def Expectimax_Search(game, state, is_max):
     yield {"status": f"{prefix} Chọn ô {best_action} (Kỳ vọng: {best_score})", "scores": scores.copy(), "best_action": best_action, "done": True}
 
 
-# ----------------- UI WRAPPERS -----------------
 
 def minimax_gen(board, is_max):
     game = TicTacToeGame()

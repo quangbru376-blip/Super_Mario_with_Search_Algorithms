@@ -8,7 +8,6 @@ class GraphColoringCSP(CSP):
         super().__init__(variables, domains, neighbors, constraint)
         self.initial_assignments = initial_assignments
 
-# ----------------- GENERIC ALGORITHMS -----------------
 
 def Backtracking_Search(csp):
     assignments = dict(csp.initial_assignments)
@@ -209,7 +208,7 @@ def Min_Conflicts_Search(csp, max_steps=1000):
         var = random.choice(conflicted_vars)
         
         min_c = float('inf')
-        min_vals = []
+        min_vals = []  
         for val in csp.domains[var]:
             c = csp.nconflicts(var, val, assignments)
             if c < min_c:
@@ -238,7 +237,6 @@ def Min_Conflicts_Search(csp, max_steps=1000):
     }
 
 
-# ----------------- UI WRAPPERS -----------------
 
 def backtracking_search(variables, neighbors_map, initial_assignments, domain):
     domains = {v: list(domain) for v in variables}

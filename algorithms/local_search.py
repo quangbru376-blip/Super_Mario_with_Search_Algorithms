@@ -28,7 +28,6 @@ class TerrainProblem(Problem):
     def is_goal(self, state):
         return self.value(state) == 9 # hardcode peak
 
-# ----------------- GENERIC ALGORITHMS -----------------
 
 def Simple_Hill_Climbing(problem):
     current = problem.initial_state
