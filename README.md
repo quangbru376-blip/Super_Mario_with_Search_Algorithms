@@ -9,7 +9,7 @@ Dự án **Super Mario AI Visualizer** là một ứng dụng mô phỏng các t
 
 - 🧑‍🎓: Trường Hoàng Long - 24110273
 
-![Github Profile](https://github.com/lh290806)
+[Github Profile](https://github.com/lh290806)
 
 - 🧑‍🎓: Đặng Duy Quang - 24110307
 ---
