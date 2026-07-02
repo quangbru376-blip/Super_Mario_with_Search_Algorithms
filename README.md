@@ -5,13 +5,11 @@ Dự án **Super Mario AI Visualizer** là một ứng dụng mô phỏng các t
 ---
 
 ## Thành viên trong nhóm
-- 🧑‍🎓: Nguyễn Công Bình - 24110168
+- 🧑‍🎓: Nguyễn Công Bình - 24110168 - [Github Profile](https://github.com/CongBinh-designer)
 
-- 🧑‍🎓: Trường Hoàng Long - 24110273
+- 🧑‍🎓: Trường Hoàng Long - 24110273 - [Github Profile](https://github.com/lh290806)
 
-[Github Profile](https://github.com/lh290806)
-
-- 🧑‍🎓: Đặng Duy Quang - 24110307
+- 🧑‍🎓: Đặng Duy Quang - 24110307 - [Github Profile](https://github.com/quangbru376-blip)
 ---
 
 ![Demo Super Mario AI Visualizer](https://github.com/quangbru376-blip/Super_Mario_with_Search_Algorithms/blob/main/gif/menu.gif)
