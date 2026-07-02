@@ -49,7 +49,7 @@ Dự án được chia thành 6 Màn chơi khác nhau, mỗi màn chơi biểu d
 
 2. ***Simulated Annealing:*** Là một thuật toán tìm kiếm cục bộ lấy cảm hứng từ việc luyện kim. Thuật toán sẽ chấp nhận giá trị mục tiêu thấp hơn để thoát khỏi đỉnh cục bộ với khả năng chấp nhận giảm dần theo thời gian.
 
-![Demo Simulated](https://github.com/quangbru376-blip/Super_Mario_with_Search_Algorithms/blob/main/gif/simulated.gif)
+![Demo Simulated](https://github.com/quangbru376-blip/Super_Mario_with_Search_Algorithms/blob/main/gif/simulate.gif)
 
 3. ***Local Beam Search:*** Là thuật toán tìm kiếm cục bộ được cải tiến từ thuật toán leo đồi. Thuật toán sẽ giữ lại k trạng thái tốt nhất và mở rộng đồng thời các trạng thái. Thuật toán sẽ giảm khả năng bị kẹt ở đỉnh cục bộ với việc khám phá nhiều hướng cùng lúc.
 
@@ -73,7 +73,7 @@ Dự án được chia thành 6 Màn chơi khác nhau, mỗi màn chơi biểu d
 *Sử dụng các ràng buộc của bài toán, Mario tô màu các ô bản đồ sao cho thỏa mãn ràng buộc.*
 1. ***Backtracking Search***: Là một dạng tìm kiếm theo chiều sâu chuyên dụng cho CSP. Thuật toán sẽ thử gán màu cho từng ô bản đồ một, nếu phát hiện một ô vi phạm ràng buộc, nó sẽ quay lui bước trước đó để thử một màu khác.
 
-![Demo Backtracking](https://github.com/quangbru376-blip/Super_Mario_with_Search_Algorithms/blob/main/gif/backgif)
+![Demo Backtracking](https://github.com/quangbru376-blip/Super_Mario_with_Search_Algorithms/blob/main/gif/back.gif)
 
 2. ***Forward Checking***: Là kỹ thuật tối ưu hóa kết hợp với **Backtracking**. Mỗi khi Mario tô một màu, thuật toán sẽ nhìn trước và loại bỏ màu đó khỏi danh sách các màu hợp lệ của các ô lân cận chưa được tô. Điều này giúp phát hiện sớm các ngõ cụt và giảm thiểu đáng kể số lần quay lui.
 
