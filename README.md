@@ -4,7 +4,74 @@ Dự án **Super Mario AI Visualizer** là một ứng dụng mô phỏng các t
 
 ---
 
+## Thành viên trong nhóm
+- 🧑‍🎓: Nguyễn Công Bình - 24110168
+
+- 🧑‍🎓: Trường Hoàng Long - 24110273
+
+![Github Profile](https://github.com/lh290806)
+
+- 🧑‍🎓: Đặng Duy Quang - 24110307
+---
+
 ![Demo Super Mario AI Visualizer](https://github.com/quangbru376-blip/Super_Mario_with_Search_Algorithms/blob/main/gif/menu.gif)
+
+---
+## 🛠 Hướng dẫn Cài đặt & Chạy ứng dụng
+
+### Yêu cầu hệ thống
+- Python 3.8 trở lên.
+
+### Bước 1: Clone dự án hoặc tải mã nguồn về máy
+```bash
+git clone https://github.com/quangbru376-blip/Super_Mario_with_Search_Algorithms.git
+cd Final_project_pygame
+```
+
+### Bước 2: Chạy ứng dụng
+Khởi động giao diện chính của chương trình, 2 file điểm vào chương trình sau đã tích hợp sẵn trình kiểm tra thư viện, khởi tạo môi trường ảo (venv) và chạy chương trình
+
+```bash
+run_game.bat
+```
+Cho Windows hoặc
+```bash
+run_game.sh
+```
+Cho Linux/macOS
+
+---
+
+## 📂 Cấu trúc Thư mục
+
+```text
+Final_project_pygame/
+│
+├── algorithms/           # Cài đặt các thuật toán AI
+│   ├── core.py           # Các lớp cơ sở (Node, Problem, Game)
+│   ├── pathfinding.py    # BFS, DFS, UCS, A*, GBFS
+│   ├── local_search.py   # Hill Climbing, Simulated Annealing
+│   ├── complex_env.py    # Sensorless, Partially Observable, And-Or Search
+│   ├── csp.py            # Backtracking, Forward Checking, Min Conflicts
+│   └── adversarial.py    # Minimax, Alpha-Beta Pruning, Expectimax
+│
+├── worlds/               # Giao diện đồ họa Pygame mô phỏng từng thế giới
+│   ├── base_world.py     # Lớp cha BasePyGameWorld chứa giao diện dùng chung
+│   ├── maze_world.py     # (World 1 & 2) Mô phỏng Pathfinding
+│   ├── local_world.py    # (World 3) Mô phỏng Local Search
+│   ├── fog_world.py      # (World 4) Mô phỏng Complex Env
+│   ├── csp_world.py      # (World 5) Mô phỏng Constraint Satisfaction
+│   └── boss_world.py     # (World 6) Mô phỏng Adversarial Search (Caro 3x3)
+│
+├── resources/            # Tài nguyên đồ họa (hình ảnh Mario, coin, gạch...) và video nền
+│
+├── main.py               # File khởi chạy chính, chứa menu tổng chọn các World
+├── config.py             # Cấu hình chung về hằng số, bản đồ (maps), màu sắc, tải Asset
+├── ui.py                 # Các thành phần giao diện UI dùng chung (Button, ComboBox, LogPanel)
+├── run_game.bat          # Script chạy ứng dụng nhanh trên Windows
+├── run_game.sh           # Script chạy ứng dụng nhanh trên Linux/macOS
+└── requirements.txt      # Danh sách thư viện Python cần thiết
+```
 
 ---
 
@@ -99,63 +166,6 @@ Dự án được chia thành 6 Màn chơi khác nhau, mỗi màn chơi biểu d
 
 ---
 
-## 🛠 Hướng dẫn Cài đặt & Chạy ứng dụng
-
-### Yêu cầu hệ thống
-- Python 3.8 trở lên.
-
-### Bước 1: Clone dự án hoặc tải mã nguồn về máy
-```bash
-git clone https://github.com/quangbru376-blip/Super_Mario_with_Search_Algorithms.git
-cd Final_project_pygame
-```
-
-### Bước 2: Chạy ứng dụng
-Khởi động giao diện chính của chương trình, 2 file điểm vào chương trình sau đã tích hợp sẵn trình kiểm tra thư viện, khởi tạo môi trường ảo (venv) và chạy chương trình
-
-```bash
-run_game.bat
-```
-Cho Windows hoặc
-```bash
-run_game.sh
-```
-Cho Linux/macOS
-
----
-
-## 📂 Cấu trúc Thư mục
-
-```text
-Final_project_pygame/
-│
-├── algorithms/           # Cài đặt các thuật toán AI
-│   ├── core.py           # Các lớp cơ sở (Node, Problem, Game)
-│   ├── pathfinding.py    # BFS, DFS, UCS, A*, GBFS
-│   ├── local_search.py   # Hill Climbing, Simulated Annealing
-│   ├── complex_env.py    # Sensorless, Partially Observable, And-Or Search
-│   ├── csp.py            # Backtracking, Forward Checking, Min Conflicts
-│   └── adversarial.py    # Minimax, Alpha-Beta Pruning, Expectimax
-│
-├── worlds/               # Giao diện đồ họa Pygame mô phỏng từng thế giới
-│   ├── base_world.py     # Lớp cha BasePyGameWorld chứa giao diện dùng chung
-│   ├── maze_world.py     # (World 1 & 2) Mô phỏng Pathfinding
-│   ├── local_world.py    # (World 3) Mô phỏng Local Search
-│   ├── fog_world.py      # (World 4) Mô phỏng Complex Env
-│   ├── csp_world.py      # (World 5) Mô phỏng Constraint Satisfaction
-│   └── boss_world.py     # (World 6) Mô phỏng Adversarial Search (Caro 3x3)
-│
-├── resources/            # Tài nguyên đồ họa (hình ảnh Mario, coin, gạch...) và video nền
-│
-├── main.py               # File khởi chạy chính, chứa menu tổng chọn các World
-├── config.py             # Cấu hình chung về hằng số, bản đồ (maps), màu sắc, tải Asset
-├── ui.py                 # Các thành phần giao diện UI dùng chung (Button, ComboBox, LogPanel)
-├── run_game.bat          # Script chạy ứng dụng nhanh trên Windows
-├── run_game.sh           # Script chạy ứng dụng nhanh trên Linux/macOS
-└── requirements.txt      # Danh sách thư viện Python cần thiết
-```
-
----
 
 **Chúc bạn có những trải nghiệm thú vị khi sử dụng các thuật toán Trí tuệ Nhân tạo trong thế giới của Super Mario! 🍄✨**
 =======
